@@ -23,21 +23,27 @@ app.get('/api/quotes', (req, res, next) => {
         const quotesByAuthor = { quotes:[]}
         quotes.forEach(quote => {
             if (quote.person === author.person) {
-                quotesByAuthor.quotes.push(quote.quote)
+                quotesByAuthor.quotes.push(quote);
             }
         })
         res.send(quotesByAuthor)
     } else {
-        res.send(quotes);
+        let allQuotes = {
+            quotes: quotes
+        }
+        res.send(allQuotes);
     }
 });
 
 
 app.post('/api/quotes', (req, res, next) => {
-    let newQuote = req.query;
-    if (newQuote.person && newQuote.quote) {
-        quotes.push(newQuote);
-        res.status(201).send(newQuote);
+    let quote = {
+        quote: req.query.quote,
+        person: req.query.person
+    };
+    if (quote.person && quote.quote) {
+        quotes.push(quote);
+        res.status(201).send({quote});
     } else {
         res.status(400).send();
     }
