@@ -13,17 +13,17 @@ app.listen(PORT, ()=> {
 
 
 app.get('/api/quotes/random', (req, res, next) => {
-    const randomQuoteElement = getRandomElement(quotes);
+    const randomQuoteElement = { quote: getRandomElement(quotes)};
     res.send(randomQuoteElement);
 });
 
 app.get('/api/quotes', (req, res, next) => {
     let author = req.query;
     if (author.person) {
-        const quotesByAuthor = []
+        const quotesByAuthor = { quotes:[]}
         quotes.forEach(quote => {
             if (quote.person === author.person) {
-                quotesByAuthor.push(quote.quote)
+                quotesByAuthor.quotes.push(quote.quote)
             }
         })
         res.send(quotesByAuthor)
@@ -34,5 +34,11 @@ app.get('/api/quotes', (req, res, next) => {
 
 
 app.post('/api/quotes', (req, res, next) => {
-    
+    let newQuote = req.query;
+    if (newQuote.person && newQuote.quote) {
+        quotes.push(newQuote);
+        res.status(201).send(newQuote);
+    } else {
+        res.status(400).send();
+    }
 })
